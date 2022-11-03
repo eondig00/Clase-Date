@@ -26,7 +26,7 @@ public class Date {
     }
 
     //Días hasta fin de mes
-    void getDaysUntilMonthEnds() {
+    public void getDaysUntilMonthEnds() {
         for (int i = day; i <= this.getMonthDays(); i++) {
             System.out.println(i + "/" + month + "/" + year);
         }
@@ -74,13 +74,13 @@ public class Date {
         }
         return monthName;
     }
-    void getMonthsUntilYearEnds() {
+    public void getMonthsUntilYearEnds() {
         for (int i = month; i <= 12; i++) {
             System.out.println("Queda el mes de " + getMonthNameWithItsNumber(i) + " hasta fin de año");
         }
     }
     //Meses con el mismo número de días
-    void getMonthsWithSameNumberOfDays(){
+    public void getMonthsWithSameNumberOfDays(){
         for (int i = month; i <= 12; i++){
 
         }
