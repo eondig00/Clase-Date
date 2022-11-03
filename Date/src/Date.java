@@ -1,49 +1,46 @@
 
-class Date{
+public class Date {
     //Variables
     private int day;
     private int month;
     private int year;
 
     //Gets
-    int getYear(){
+    int getYear() {
         return this.year;
     }
-    int getMonth(){
+
+    int getMonth() {
         return this.month;
     }
-    int getDay(){
+
+    int getDay() {
         return this.day;
     }
 
     //Constructor
-    public Date(int day, int month, int year){
+    public Date(int day, int month, int year) {
         this.day = day;
         this.month = month;
         this.year = year;
     }
 
     //Días hasta fin de mes
-    void getDatesUntilMonthEnd(){
-        for(int i = day; i <= this.getMonthDays(); i++){
+    void getDaysUntilMonthEnds() {
+        for (int i = day; i <= this.getMonthDays(); i++) {
             System.out.println(i + "/" + month + "/" + year);
         }
     }
-
-    //Saber si es mismo día
-    public boolean isSameDay(Date another){
-        return this.year == another.getYear() && this.month == another.getMonth() && this.day == another.getDay();
-    }
-    // Nombre del mes por el número
-    String getMonthName(){
+    //Meses hasta fin de año
+    private String getMonthNameWithItsNumber(int month){
         String monthName = "";
-        switch (this.month) {
+        switch (month) {
             case 1:
                 monthName = "enero";
-            break;
+                break;
             case 2:
                 monthName = "febrero";
-            break;
+                break;
             case 3:
                 monthName = "marzo";
                 break;
@@ -76,23 +73,70 @@ class Date{
                 break;
         }
         return monthName;
+    }
+    void getMonthsUntilYearEnds() {
+        for (int i = month; i <= 12; i++) {
+            System.out.println("Queda el mes de " + getMonthNameWithItsNumber(i) + " hasta fin de año");
         }
+    }
+    //Meses con el mismo número de días
+    void getMonthsWithSameNumberOfDays(){
+        for (int i = month; i <= 12; i++){
+
+        }
+    }
+
+    //Saber si es mismo día/mes/año/fecha
+    public boolean isSame(Date another) {
+        return this.year == another.getYear() && this.month == another.getMonth() && this.day == another.getDay();
+    }
+    public boolean isSameDay(Date another) {
+        return this.day == another.getDay();
+    }
+    public boolean isSameMonth(Date another) {
+        return this.month == another.getMonth();
+    }
+    public boolean isSameYear(Date another) {
+        return this.year == another.getYear();
+    }
+
+    // Nombre del mes por el número
+    String getMonthName() {
+        return getMonthNameWithItsNumber(this.month);
+    }
+
     //Estacion del año por meses
-    String getSeason(){
+    String getSeason() {
         String season = "";
-        switch(this.month) {
-        case 12: //next
-        case 1: //next
-        case 2:
-            season = "invierno";
-            break;
+        switch (this.month) {
+            case 12: //next
+            case 1: //next
+            case 2:
+                season = "invierno";
+                break;
+            case 3: //next
+            case 4: //next
+            case 5:
+                season = "primavera";
+                break;
+            case 6: //next
+            case 7: //next
+            case 8:
+                season = "verano";
+                break;
+            case 9: //next
+            case 10: //next
+            case 11:
+                season = "otoño";
+                break;
         }
         return season;
     }
+
     // Número de días al mes
-    int getMonthDays(){
+    int getMonthDays() {
         int monthDays = 0;
-        switch (this.month){
+        switch (this.month) {
             case 1:
                 monthDays = 31;
                 break;
@@ -131,5 +175,22 @@ class Date{
                 break;
         }
         return monthDays;
+        // Meses hasta fin de año
+
+    }
+
+    //toString
+    public String toString() {
+        //Date en números
+        StringBuilder numberDate = new StringBuilder();
+        numberDate.append(this.day);
+        numberDate.append("/");
+        numberDate.append(this.month);
+        numberDate.append("/");
+        numberDate.append(this.year);
+        return numberDate.toString();
+        //Date en letra
+        //
+
     }
 }
