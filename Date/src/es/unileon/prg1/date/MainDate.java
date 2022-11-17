@@ -1,3 +1,5 @@
+package es.unileon.prg1.date;
+
 public class MainDate {
     public static void main(String[] args) {
         // Declaración de fechas
@@ -10,6 +12,9 @@ public class MainDate {
         System.out.println(ayer.toString());
         // Meses hasta fin de año
         hoy.getMonthsUntilYearEnds();
+        // Meses de hoy
         System.out.println(hoy.getMonthName());
+        // Meses con el mismo número de días
+        hoy.getMonthsWithSameNumberOfDays();
     }
 }

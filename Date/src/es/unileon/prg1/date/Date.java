@@ -1,3 +1,4 @@
+package es.unileon.prg1.date;
 
 public class Date {
     //Variables
@@ -24,6 +25,14 @@ public class Date {
         this.month = month;
         this.year = year;
     }
+
+    //Constructor
+    public Date() {
+        this.day = 1;
+        this.month = 1;
+        this.year = 2017;
+    }
+    //Returns the string version of date
 
     //Días hasta fin de mes
     public void getDaysUntilMonthEnds() {
@@ -80,11 +89,39 @@ public class Date {
         }
     }
     //Meses con el mismo número de días
+    public int getMonthSameDays(int month){
+        int monthSameDays = 0;
+        switch (month) {
+            case 1:
+            case 3:
+            case 5:
+            case 7:
+            case 8:
+            case 10:
+            case 12:
+                monthSameDays = 31;
+                break;
+            case 2:
+                monthSameDays = 28;
+                break;
+            case 4:
+            case 6:
+            case 9:
+            case 11:
+                monthSameDays = 30;
+                break;
+        }
+        return monthSameDays;
+    }
     public void getMonthsWithSameNumberOfDays(){
-        for (int i = month; i <= 12; i++){
-
+        System.out.println(getMonthNameWithItsNumber(month) + " tiene el mismo número de días que");
+        for (int i = 1; i<= 12; i++) {
+            if (getMonthDays() == getMonthSameDays(i) && this.month != i) {
+                System.out.println(getMonthNameWithItsNumber(i));
+            }
         }
     }
+    //string version of date
 
     //Saber si es mismo día/mes/año/fecha
     public boolean isSame(Date another) {
@@ -105,7 +142,7 @@ public class Date {
         return getMonthNameWithItsNumber(this.month);
     }
 
-    //Estacion del año por meses
+    //Estación del año por meses
     String getSeason() {
         String season = "";
         switch (this.month) {
