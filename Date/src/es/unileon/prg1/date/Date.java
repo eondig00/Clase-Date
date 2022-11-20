@@ -5,7 +5,25 @@ public class Date {
     private int day;
     private int month;
     private int year;
+    // Excepción
+    public void setDay(int day) throws DateException {
+        if ( day < 1 || day > this.getDaysUntilMonthEnds()) {
+            throw new DateException("Date error: Day " + day + " of month " + this.month + " not valid");
+        }
+        this.day = day;
+    }
 
+    public void setMonth (int month) throws DateException {
+        if ( month < 1 || month > 12) {
+            throw new DateException("Date error: Month " + month + " not valid");
+        }
+        this.month = month;
+    }
+
+    public void setYear (int year) {
+        this.year = year;
+    }
+    
     //Gets
     int getYear() {
         return this.year;
@@ -20,25 +38,26 @@ public class Date {
     }
 
     //Constructor
-    public Date(int day, int month, int year) {
-        this.day = day;
-        this.month = month;
-        this.year = year;
+    public Date (int day, int month, int year) throws DateException {
+        //this.month = month;
+        this.setMonth(month);
+        //this.day = day;
+        this.setDay(day);
+        //this.year = year;
+        this.setYear(year);
     }
-
     //Constructor
     public Date() {
         this.day = 1;
         this.month = 1;
         this.year = 2017;
     }
-    //Returns the string version of date
-
     //Días hasta fin de mes
-    public void getDaysUntilMonthEnds() {
-        for (int i = day; i <= this.getMonthDays(); i++) {
+    public int getDaysUntilMonthEnds() {
+        for (int i = day; i <= this.getThisMonthDays(); i++) {
             System.out.println(i + "/" + month + "/" + year);
         }
+        return this.getThisMonthDays() - day;
     }
     //Meses hasta fin de año
     private String getMonthNameWithItsNumber(int month){
@@ -116,13 +135,11 @@ public class Date {
     public void getMonthsWithSameNumberOfDays(){
         System.out.println(getMonthNameWithItsNumber(month) + " tiene el mismo número de días que");
         for (int i = 1; i<= 12; i++) {
-            if (getMonthDays() == getMonthSameDays(i) && this.month != i) {
+            if (getThisMonthDays() == getMonthSameDays(i) && this.month != i) {
                 System.out.println(getMonthNameWithItsNumber(i));
             }
         }
     }
-    //string version of date
-
     //Saber si es mismo día/mes/año/fecha
     public boolean isSame(Date another) {
         return this.year == another.getYear() && this.month == another.getMonth() && this.day == another.getDay();
@@ -170,10 +187,14 @@ public class Date {
         return season;
     }
 
+    int getThisMonthDays() {
+        return getMonthDays(this.month);
+    }
+
     // Número de días al mes
-    int getMonthDays() {
+    int getMonthDays(int month) {
         int monthDays = 0;
-        switch (this.month) {
+        switch (month) {
             case 1:
                 monthDays = 31;
                 break;
@@ -212,11 +233,140 @@ public class Date {
                 break;
         }
         return monthDays;
-        // Meses hasta fin de año
-
     }
+    //For a date, count the number of days since the first day
+    //of the year (do not consider leap years)
+    public int getDaysSinceStartOfYearToDate() {
+        int daysAdd = 0;
+        for (int i = 1; i < this.month; i++) {
+            daysAdd += getMonthDays(i);
+        }
+        return daysAdd + this.day ;
+    }
+    //Build a method that counts the number of attempts
+    //needed to generate a random date equals to a given
+    //date (only inside the same year)
+    //While
+    public int randomDateSameWhile() {
+        boolean randomDate = false;
+        int attempts = 0;
+        while(!randomDate){
+            int random_day = (int)Math.floor(Math.random()*(31-1+1)+1);
+            int random_month = (int)Math.floor(Math.random()*(12-1+1)+1);
+            attempts++;
+            if( random_day == this.day && random_month == this.month){
+                randomDate = true;
+            }
+        }
+        return attempts;
+    }
+    //Do-while
+    public int randomDateSameDoWhile() {
+        boolean randomDate2 = false;
+        int attempts2 = 0;
+        do{
+            int random_day = (int)Math.floor(Math.random()*(31-1+1)+1);
+            int random_month = (int)Math.floor(Math.random()*(12-1+1)+1);
+            attempts2++;
+            if( random_day == this.day && random_month == this.month) {
+                randomDate2 = true;
+            }
+        } while(!randomDate2);
+        return attempts2;
+    }
+    //Sacar día de la semana
+        //Year code
+        int y = year % 100;
+        int yearCode = (int) (y+(y/4))%7;
+        //Month code
+        int monthCode = 0;
+        int getMonthCode (int month) {
+            switch (month) {
+                case 1: //next
+                case 10:
+                    monthCode = 0;
+                    break;
+                case 2: //next
+                case 3: //next
+                case 11:
+                    monthCode = 3;
+                    break;
+                case 4: //next
+                case 7:
+                    monthCode = 6;
+                    break;
+                case 5:
+                    monthCode = 1;
+                    break;
+                case 6:
+                    monthCode = 4;
+                    break;
+                case 8:
+                    monthCode = 2;
+                    break;
+                case 9: //next
+                case 12:
+                    monthCode = 5;
+                    break;
+            }
+            return monthCode;
+        }
+        //Code century - Gregorian Calendar
+        public int getCenturyCode(int year) {
+            int centuryCode = 0;
+            if ((1700 >= year && year < 1800) || (2100 <= year && year < 2200)) {
+                centuryCode = 4;
+            }
+            if ((1800  >= year && year < 1900) || (2200 <= year && year < 2300)) {
+                centuryCode = 2;
+            }
+            if ((1900 >= year && year < 2000) || (2300 <= year && year < 2400)) {
+                centuryCode = 0;
+            }
+            if (2000 >= year && year < 2100) {
+                centuryCode = 6;
+            }
+            return centuryCode;
+        }
+        //Leap year - gregorian calendar
+        public int getLeapYearCode(int year) {
+            int leapYearCode = 0;
+            if(((year % 4 == 0) && !(year % 100 == 0)) || (year % 400 == 0)){
+                leapYearCode = 1;
+            }
+            return leapYearCode;
+        }
+        //Calculating day
 
-    //toString
+        public String getDayWeek() {
+            int dayWeek = (yearCode + monthCode + getCenturyCode(year) + day - getLeapYearCode(year))%7;
+            String nameDayOfWeek = "";
+            switch (dayWeek) {
+                case 0:
+                    nameDayOfWeek = "domingo";
+                    break;
+                case 1:
+                    nameDayOfWeek = "lunes";
+                    break;
+                case 2:
+                    nameDayOfWeek = "martes";
+                    break;
+                case 3:
+                    nameDayOfWeek = "miércoles";
+                    break;
+                case 4:
+                    nameDayOfWeek = "jueves";
+                    break;
+                case 5:
+                    nameDayOfWeek = "viernes";
+                    break;
+                case 6:
+                    nameDayOfWeek = "sábado";
+                    break;
+            }
+            return nameDayOfWeek;
+        }
+    //Date en String
     public String toString() {
         //Date en números
         StringBuilder numberDate = new StringBuilder();
@@ -226,8 +376,6 @@ public class Date {
         numberDate.append("/");
         numberDate.append(this.year);
         return numberDate.toString();
-        //Date en letra
-        //
-
     }
 }
+
