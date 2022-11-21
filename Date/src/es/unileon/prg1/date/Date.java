@@ -1,26 +1,32 @@
 package es.unileon.prg1.date;
 
+import java.time.MonthDay;
+
 public class Date {
     //Variables
     private int day;
     private int month;
     private int year;
+    
     // Excepción
     public void setDay(int day) throws DateException {
-        if ( day < 1 || day > this.getDaysUntilMonthEnds()) {
-            throw new DateException("Date error: Day " + day + " of month " + this.month + " not valid");
+        if ( day < 1 || day > this.getMonthDays(month)) {
+            throw new DateException("Día " + day + " del mes " + this.month + " no válido");
         }
         this.day = day;
     }
 
     public void setMonth (int month) throws DateException {
-        if ( month < 1 || month > 12) {
-            throw new DateException("Date error: Month " + month + " not valid");
+        if ( month < 1 || month > 12 || this.getMonthDays(month) < this.day) {
+            throw new DateException("Mes " + month + " no válido");
         }
         this.month = month;
     }
 
-    public void setYear (int year) {
+    public void setYear (int year) throws DateException {
+       if (year < 0) {
+        throw new DateException("El año " + year + " no  es válido");
+        }
         this.year = year;
     }
     
@@ -51,64 +57,96 @@ public class Date {
         this.day = 1;
         this.month = 1;
         this.year = 2017;
+    } 
+    
+    public Date (Date today) {
+        this.day = 1;
+        this.month = 1;
+        this.year = 2017;
     }
-    //Días hasta fin de mes
-    public int getDaysUntilMonthEnds() {
-        for (int i = day; i <= this.getThisMonthDays(); i++) {
-            System.out.println(i + "/" + month + "/" + year);
+    
+    public Date tomorrow() {
+        Date tempTomorrow = new Date();
+        if (this.day + 1 <= getMonthDays(this.month)){
+            tempTomorrow.day = this.day + 1;
         }
-        return this.getThisMonthDays() - day;
+        else {
+            tempTomorrow.day = 1;
+        }
+        if (tempTomorrow.day == 1){
+            if (this.month + 1 > 12){
+                tempTomorrow.month = 1; 
+                tempTomorrow.year = this.year + 1;   
+            }
+            else {
+                tempTomorrow.month = this.month + 1;
+                tempTomorrow.year = this.year;
+            }
+        }
+        return tempTomorrow;
+    }
+
+    //Días hasta fin de mes
+    public String getDaysLeftOfMonth() {
+        StringBuffer fecha = new StringBuffer();
+        for (int i = day + 1; i <= this.daysOfMonth(); i++) {
+            fecha.append(i + "/" + this.month + "/" + this.year + " ");
+        }
+        return fecha.toString();
     }
     //Meses hasta fin de año
     private String getMonthNameWithItsNumber(int month){
         String monthName = "";
         switch (month) {
             case 1:
-                monthName = "enero";
+                monthName = "January";
                 break;
             case 2:
-                monthName = "febrero";
+                monthName = "February";
                 break;
             case 3:
-                monthName = "marzo";
+                monthName = "March";
                 break;
             case 4:
-                monthName = "abril";
+                monthName = "April";
                 break;
             case 5:
-                monthName = "mayo";
+                monthName = "May";
                 break;
             case 6:
-                monthName = "junio";
+                monthName = "June";
                 break;
             case 7:
-                monthName = "julio";
+                monthName = "July";
                 break;
             case 8:
-                monthName = "agosto";
+                monthName = "August";
                 break;
             case 9:
-                monthName = "septiembre";
+                monthName = "September";
                 break;
             case 10:
-                monthName = "octubre";
+                monthName = "October";
                 break;
             case 11:
-                monthName = "noviembre";
+                monthName = "November";
                 break;
             case 12:
-                monthName = "diciembre";
+                monthName = "December";
                 break;
         }
         return monthName;
     }
-    public void getMonthsUntilYearEnds() {
-        for (int i = month; i <= 12; i++) {
-            System.out.println("Queda el mes de " + getMonthNameWithItsNumber(i) + " hasta fin de año");
+    public String getMonthsLeft() {
+        StringBuilder temp = new StringBuilder();
+        for (int i = month+1; i <= 12; i++) {
+            System.out.println(getMonthNameWithItsNumber(i));
+            temp.append(getMonthNameWithItsNumber(i) + " ");
         }
+        return temp.toString();
     }
     //Meses con el mismo número de días
-    public int getMonthSameDays(int month){
+    public int getMonthSameNumberDays(int month){
         int monthSameDays = 0;
         switch (month) {
             case 1:
@@ -132,13 +170,15 @@ public class Date {
         }
         return monthSameDays;
     }
-    public void getMonthsWithSameNumberOfDays(){
-        System.out.println(getMonthNameWithItsNumber(month) + " tiene el mismo número de días que");
+    public String getMonthsSameDays(){
+        StringBuilder sb = new StringBuilder();
+            sb.append(getMonthNameWithItsNumber(this.month) + " ");
         for (int i = 1; i<= 12; i++) {
-            if (getThisMonthDays() == getMonthSameDays(i) && this.month != i) {
-                System.out.println(getMonthNameWithItsNumber(i));
+            if (daysOfMonth() == getMonthSameNumberDays(i) && this.month != i) {
+                
+                sb.append(getMonthNameWithItsNumber(i) + " ");
             }
-        }
+        } return sb.toString();
     }
     //Saber si es mismo día/mes/año/fecha
     public boolean isSame(Date another) {
@@ -160,94 +200,77 @@ public class Date {
     }
 
     //Estación del año por meses
-    String getSeason() {
+    String getSeasonName() {
         String season = "";
         switch (this.month) {
             case 12: //next
             case 1: //next
             case 2:
-                season = "invierno";
+                season = "Winter";
                 break;
             case 3: //next
             case 4: //next
             case 5:
-                season = "primavera";
+                season = "Spring";
                 break;
             case 6: //next
             case 7: //next
             case 8:
-                season = "verano";
+                season = "Summer";
                 break;
             case 9: //next
             case 10: //next
             case 11:
-                season = "otoño";
+                season = "Autumn";
                 break;
         }
         return season;
     }
 
-    int getThisMonthDays() {
+    public int daysOfMonth() {
         return getMonthDays(this.month);
     }
 
     // Número de días al mes
-    int getMonthDays(int month) {
+    public int getMonthDays(int month){
         int monthDays = 0;
         switch (month) {
-            case 1:
+            case 1: //next
+            case 3: //next
+            case 5: //next
+            case 7: //next
+            case 8: //next
+            case 10: //next
+            case 12:
                 monthDays = 31;
                 break;
             case 2:
                 monthDays = 28;
                 break;
-            case 3:
-                monthDays = 31;
-                break;
-            case 4:
+            case 4: //next
+            case 6: //next
+            case 9: //next
+            case 11: //next
                 monthDays = 30;
-                break;
-            case 5:
-                monthDays = 31;
-                break;
-            case 6:
-                monthDays = 30;
-                break;
-            case 7:
-                monthDays = 31;
-                break;
-            case 8:
-                monthDays = 31;
-                break;
-            case 9:
-                monthDays = 30;
-                break;
-            case 10:
-                monthDays = 31;
-                break;
-            case 11:
-                monthDays = 30;
-                break;
-            case 12:
-                monthDays = 31;
                 break;
         }
         return monthDays;
     }
     //For a date, count the number of days since the first day
     //of the year (do not consider leap years)
-    public int getDaysSinceStartOfYearToDate() {
+    public int daysPast() {
         int daysAdd = 0;
         for (int i = 1; i < this.month; i++) {
             daysAdd += getMonthDays(i);
         }
-        return daysAdd + this.day ;
+        
+        return daysAdd + this.day - 1;
     }
     //Build a method that counts the number of attempts
     //needed to generate a random date equals to a given
     //date (only inside the same year)
     //While
-    public int randomDateSameWhile() {
+    public int numRandomTriesEqualDate() {
         boolean randomDate = false;
         int attempts = 0;
         while(!randomDate){
@@ -274,98 +297,44 @@ public class Date {
         } while(!randomDate2);
         return attempts2;
     }
-    //Sacar día de la semana
-        //Year code
-        int y = year % 100;
-        int yearCode = (int) (y+(y/4))%7;
-        //Month code
-        int monthCode = 0;
-        int getMonthCode (int month) {
-            switch (month) {
-                case 1: //next
-                case 10:
-                    monthCode = 0;
-                    break;
-                case 2: //next
-                case 3: //next
-                case 11:
-                    monthCode = 3;
-                    break;
-                case 4: //next
-                case 7:
-                    monthCode = 6;
-                    break;
-                case 5:
-                    monthCode = 1;
-                    break;
-                case 6:
-                    monthCode = 4;
-                    break;
-                case 8:
-                    monthCode = 2;
-                    break;
-                case 9: //next
-                case 12:
-                    monthCode = 5;
-                    break;
-            }
-            return monthCode;
+    //Sacar día de la semana (01/01 -> lunes)
+    public String dayOfWeek(int day){
+        int diaSemana = 0;
+        if (this.month == 1){
+            diaSemana = this.day % 7;
         }
-        //Code century - Gregorian Calendar
-        public int getCenturyCode(int year) {
-            int centuryCode = 0;
-            if ((1700 >= year && year < 1800) || (2100 <= year && year < 2200)) {
-                centuryCode = 4;
-            }
-            if ((1800  >= year && year < 1900) || (2200 <= year && year < 2300)) {
-                centuryCode = 2;
-            }
-            if ((1900 >= year && year < 2000) || (2300 <= year && year < 2400)) {
-                centuryCode = 0;
-            }
-            if (2000 >= year && year < 2100) {
-                centuryCode = 6;
-            }
-            return centuryCode;
+        else {
+                diaSemana = (this.day + getMonthDays(this.month - 1)) % 7;
         }
-        //Leap year - gregorian calendar
-        public int getLeapYearCode(int year) {
-            int leapYearCode = 0;
-            if(((year % 4 == 0) && !(year % 100 == 0)) || (year % 400 == 0)){
-                leapYearCode = 1;
-            }
-            return leapYearCode;
+        return getDayWeek(diaSemana);
+    }
+    public String getDayWeek(int dia) {
+        String nameDayOfWeek = "";
+        switch (dia) {
+            case 0:
+                nameDayOfWeek = "Sunday";
+                break;
+            case 1:
+                nameDayOfWeek = "Monday";
+                break;
+            case 2:
+                nameDayOfWeek = "Tuesday";
+                break;
+            case 3:
+                nameDayOfWeek = "Wednesday";
+                break;
+            case 4:
+                nameDayOfWeek = "Thursday";
+                break;
+            case 5:
+                nameDayOfWeek = "Friday";
+                break;
+            case 6:
+                nameDayOfWeek = "Saturday";
+                break;
         }
-        //Calculating day
-
-        public String getDayWeek() {
-            int dayWeek = (yearCode + monthCode + getCenturyCode(year) + day - getLeapYearCode(year))%7;
-            String nameDayOfWeek = "";
-            switch (dayWeek) {
-                case 0:
-                    nameDayOfWeek = "domingo";
-                    break;
-                case 1:
-                    nameDayOfWeek = "lunes";
-                    break;
-                case 2:
-                    nameDayOfWeek = "martes";
-                    break;
-                case 3:
-                    nameDayOfWeek = "miércoles";
-                    break;
-                case 4:
-                    nameDayOfWeek = "jueves";
-                    break;
-                case 5:
-                    nameDayOfWeek = "viernes";
-                    break;
-                case 6:
-                    nameDayOfWeek = "sábado";
-                    break;
-            }
-            return nameDayOfWeek;
-        }
+        return nameDayOfWeek;
+    }
     //Date en String
     public String toString() {
         //Date en números
@@ -377,5 +346,5 @@ public class Date {
         numberDate.append(this.year);
         return numberDate.toString();
     }
-}
 
+}

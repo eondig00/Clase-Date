@@ -5,26 +5,26 @@ public class MainDate {
         // Excepciones
         try {
             // Declaración de fechas
-            Date hoy = new Date(25, 10, 2022);
-            Date ayer = new Date(24, 10, 2022);
+            Date today = new Date(1, 1, 2017);
+            Date ayer = new Date(31, 1, 2016);
             // Usos
-            hoy.isSame(ayer);
+            today.isSame(ayer);
             // Prints
-            System.out.println(hoy.toString());
+            System.out.println(today.toString());
             System.out.println(ayer.toString());
             // Meses hasta fin de año
-            hoy.getMonthsUntilYearEnds();
+            today.getMonthsLeft();
+            // Meses hasta fin de año
             // Meses de hoy
-            System.out.println(hoy.getMonthName());
+            System.out.println(today.getMonthName());
             // Meses con el mismo número de días
-            hoy.getMonthsWithSameNumberOfDays();
+            today.getMonthsSameDays();
             // Días desde el principio
-            System.out.println(hoy.getDaysSinceStartOfYearToDate());
+            System.out.println(today.daysPast());
             // Attempts
-            System.out.println(hoy.randomDateSameWhile());
-            System.out.println(hoy.randomDateSameDoWhile());
+            System.out.println(today.numRandomTriesEqualDate());
+            System.out.println(today.randomDateSameDoWhile());
             // Day of week
-            System.out.println(hoy.getDayWeek());
 
         }
         catch (DateException e) {
